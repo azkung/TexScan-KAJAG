@@ -1,0 +1,50 @@
+version: "3"
+volumes:
+  uploads:
+  tex:
+  pdf:
+services:
+  redis:
+    image: redis:6.0-alpine
+  mongodb:
+    image: mongo:4.2-bionic
+  flask:
+    build:
+      context: ./webserver/
+      dockerfile: ./flask/Dockerfile
+    env_file: ./webserver/flask/flask.env
+    ports:
+      - 5000:5000
+    depends_on:
+      - celery
+      - redis
+    volumes:
+      - uploads:/var/www/uploads
+  celery:
+    build: ./webserver/celery
+    env_file: ./webserver/celery/celery.env
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+    volumes:
+      - uploads:/uploads
+      - tex:/tex
+      - pdf:/pdf
+  node:
+    build: ./frontend_server/api
+    ports:
+      - 9001:9001
+    depends_on:
+      - mongodb
+      - flask
+    volumes:
+      - uploads:/app/uploads
+      - tex:/app/tex
+      - pdf:/app/pdf
+  react:
+    build: ./frontend_server/frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - node

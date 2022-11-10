@@ -1,0 +1,18 @@
+.image {
+  background-position: center;
+  background-size: cover;
+  background-image: url("math-30.png");
+  min-height: 100%;
+}
+
+.rectangle {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  background-color: black;
+  color: white;
+  align-content: center;
+}
+
+.pad {
+  padding-top: 250px;
+}
